@@ -71,6 +71,7 @@ const DateOfBirthPicker = ({ className }) => {
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
     const [popoverDisplayDate, setPopoverDisplayDate] = useState(new Date());
+    const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
     const handleYearChange = (year) => {
         setSelectedYear(year);
@@ -95,8 +96,8 @@ const DateOfBirthPicker = ({ className }) => {
     };
 
     const handleDateSelect = (date) => {
-        // console.log(format(date, "PPP"));
         setDate(date);
+        setIsPopoverOpen(false);
 
         // if you wanna use it in a form, you can use this
         // don't forget to destrucutre formData and setFormData as props above if you do
@@ -104,12 +105,12 @@ const DateOfBirthPicker = ({ className }) => {
     };
 
     return (
-        <Popover side="bottom">
+        <Popover side="bottom" open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
             <PopoverTrigger asChild>
                 <Button
                     variant={"outline"}
                     className={cn(
-                        "w-56 h-11 justify-start text-left font-normal border-slate-300",
+                        "w-60 h-11 justify-start text-left font-normal border-slate-300",
                         !date && "text-muted-foreground",
                         className
                     )}
@@ -127,12 +128,15 @@ const DateOfBirthPicker = ({ className }) => {
                     />
                 </div>
                 <Calendar
+                    initialFocus
                     mode="single"
                     selected={date}
                     onSelect={handleDateSelect}
+                    // NB: these props are called month and onMonthChange on the DayPicker in the
+                    //     calendar component. I just renamed them here to be more explicit, since
+                    //     they update the whole display date, not just the month
                     displayDate={popoverDisplayDate}
                     setDisplayDate={setPopoverDisplayDate}
-                    initialFocus
                 />
             </PopoverContent>
         </Popover>
